@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MarketSummary",
+  "description": "自选早晚报 - 大盘总结 输出结构",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["summary", "newsId", "title", "publishTime", "publisher"],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "minLength": 200,
+      "maxLength": 1500,
+      "description": "大盘总结完整正文，专业、客观、结构清晰"
+    },
+    "newsId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "代表性新闻ID或合成ID"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 50,
+      "description": "大盘总结标题，12-22字最佳"
+    },
+    "publishTime": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}(:\\d{2})?$",
+      "description": "生成时间，格式 YYYY-MM-DD HH:mm:ss"
+    },
+    "publisher": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "发布方标识"
+    }
+  }
+}
