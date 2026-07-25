@@ -1,0 +1,320 @@
+{
+  "gzgg": {
+    "symbol": "1",
+    "name": "宁德时代",
+    "market": "早报_关注的个股",
+    "analysis": "近期宁德时代市场关注度显著提升，资金面呈现积极信号。公司经营端持续释放正面信息，包括业绩稳健增长、大规模回购与分红计划同步推进，叠加储能业务高景气延续及多项产业合作落地，形成较强基本面支撑；但外围市场存在一定的做空情绪扰动。短期股价或围绕公司资本运作节奏与行业景气变化展开震荡整固。当前整体运行偏强，建议关注后续回购实施进展、储能订单落地及行业政策推进情况。",
+    "summaryList": [
+      {
+        "summary": "2026年上半年净利润432.84亿元，同比增长41.98%，拟10派14.11元（含税）。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "d7955d187fc21607ce565a193897b976",
+            "title": "宁德时代：上半年净利润同比增长41.98% 拟10派14.11元",
+            "publishTime": 1784892840000,
+            "publishTimeIso": "2026-07-24T11:34:00.000Z",
+            "publisher": "证券时报网"
+          },
+          {
+            "newsType": "news",
+            "newsId": "04b7eb85b750afd12a06b69f2e9d767d",
+            "title": "宁德时代：上半年净利同比增41.98% 拟10派14.11元",
+            "publishTime": 1784893860000,
+            "publishTimeIso": "2026-07-24T11:51:00.000Z",
+            "publisher": "上海证券报"
+          },
+          {
+            "newsType": "news",
+            "newsId": "18b62f3619e85cd08342214638d5abd7",
+            "title": "今日晚间，“宁王”宣布，最高回购400亿元！",
+            "publishTime": 1784896740000,
+            "publishTimeIso": "2026-07-24T12:39:00.000Z",
+            "publisher": "证券时报网"
+          },
+          {
+            "newsType": "news",
+            "newsId": "ca753171878d88b1167260cab59c6792",
+            "title": "宁德时代领衔 福建辖区上市公司回购分红热潮涌动",
+            "publishTime": 1784945100000,
+            "publishTimeIso": "2026-07-25T02:05:00.000Z",
+            "publisher": "中证网"
+          },
+          {
+            "newsType": "news",
+            "newsId": "d041f5b05ee337eafbe0d1a82a2decdd",
+            "title": "市场需求旺盛 深市48家电力设备企业半年报预增",
+            "publishTime": 1785066540000,
+            "publishTimeIso": "2026-07-26T11:49:00.000Z",
+            "publisher": "上海证券报"
+          }
+        ]
+      },
+      {
+        "summary": "拟回购200亿至400亿元股份用于注销并减少注册资本，回购价不超573元/股。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "5dc0ed441fa0a7786e01af58d5ffa535",
+            "title": "宁德时代：拟200亿元—400亿元回购股份",
+            "publishTime": 1784892660000,
+            "publishTimeIso": "2026-07-24T11:31:00.000Z",
+            "publisher": "证券时报网"
+          },
+          {
+            "newsType": "news",
+            "newsId": "42486bcf3224181bbede499dc2ceb5d8",
+            "title": "宁德时代（300750.SZ）拟200亿元-400亿元回购股份用于注销 回购价上限573元/股",
+            "publishTime": 1784894555000,
+            "publishTimeIso": "2026-07-24T12:02:35.000Z",
+            "publisher": "智通财经"
+          },
+          {
+            "newsType": "news",
+            "newsId": "a6fde5c13493de527f15ae2d915e62c0",
+            "title": "公告精选：蓝思科技与Intel签署合作备忘录；宁德时代拟200亿元—400亿元回购股份",
+            "publishTime": 1784896140000,
+            "publishTimeIso": "2026-07-24T12:29:00.000Z",
+            "publisher": "证券时报网"
+          },
+          {
+            "newsType": "news",
+            "newsId": "f76b5ced031b12c2fdcbd3273420da99",
+            "title": "最高400亿元！A股史上最大规模回购，全部注销",
+            "publishTime": 1784896560000,
+            "publishTimeIso": "2026-07-24T12:36:00.000Z",
+            "publisher": "证券时报网"
+          },
+          {
+            "newsType": "news",
+            "newsId": "fef4818a142b36ac61c7f8b8b46cc53c",
+            "title": "宁德时代：拟斥资200亿至400亿元回购股份 用于注销并减少公司注册资本",
+            "publishTime": 1784899500000,
+            "publishTimeIso": "2026-07-24T13:25:00.000Z",
+            "publisher": "上海证券报"
+          },
+          {
+            "newsType": "news",
+            "newsId": "9d062995cd0a3664065448df91a22428",
+            "title": "宁德时代:关于“质量回报双提升”行动方案的进展公告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          },
+          {
+            "newsType": "news",
+            "newsId": "c8a6d14606f83bf5b9c3f9f070b666f7",
+            "title": "宁德时代:关于回购公司股份方案的公告暨回购股份报告书",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          },
+          {
+            "newsType": "news",
+            "newsId": "88419072210372194aeb5bcf3feacd49",
+            "title": "火速出手！多家A股公司，宣布实施回购",
+            "publishTime": 1785059700000,
+            "publishTimeIso": "2026-07-26T09:55:00.000Z",
+            "publisher": "证券时报网"
+          }
+        ]
+      },
+      {
+        "summary": "2026年7月24日公布中期分红方案，每10股派14.11元（含税），总额约64.93亿元。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "01ca883db52d7fdba4561f08ba8e24c9",
+            "title": "宁德时代:第四届董事会第十八次会议决议公告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          },
+          {
+            "newsType": "news",
+            "newsId": "d595bcb8b5a5c7888e6c0df2980ca865",
+            "title": "宁德时代:关于2026年中期分红方案的公告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          },
+          {
+            "newsType": "news",
+            "newsId": "644c5079e655fea2592cf5e14038ddfa",
+            "title": "7家公司半年报分红方案出炉，“宁王”在列！下周2股解禁比例超50%（附股）",
+            "publishTime": 1784974680000,
+            "publishTimeIso": "2026-07-25T10:18:00.000Z",
+            "publisher": "证券时报网"
+          }
+        ]
+      },
+      {
+        "summary": "因2026年中期分红方案调整股票期权行权价格和限制性股票授予价格。",
+        "tag": "",
+        "sentiment": null,
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "0136a0470cbfb29efd83fa2ef1b34802",
+            "title": "宁德时代:关于调整股票期权行权价格和限制性股票授予价格的公告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          },
+          {
+            "newsType": "news",
+            "newsId": "f482156fad5379b9d97500698fc825ae",
+            "title": "宁德时代:上海市通力律师事务所关于宁德时代新能源科技股份有限公司调整股票期权行权价格和限制性股票授予价格的法律意见书",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          }
+        ]
+      },
+      {
+        "summary": "子公司广东邦普拟注册发行不超过50亿元债券，用于项目建设、补流及偿债。",
+        "tag": "",
+        "sentiment": null,
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "4884ce65391dd0150a8ea1526e4c19f8",
+            "title": "宁德时代:关于子公司拟注册发行债券的公告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          }
+        ]
+      },
+      {
+        "summary": "2026年7月23日完成发行80亿元绿色科技创新债券，其中品种一70亿元、品种二10亿元。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "763344a5ab2fbdd25bd0a623f3d67abc",
+            "title": "宁德时代:关于2026年度第五期绿色科技创新债券发行完成的公告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          }
+        ]
+      },
+      {
+        "summary": "变更部分募集资金用途，将48亿元投向厦门电池产业基地项目。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "74cb84381233c41d13ef8d2fc307cb02",
+            "title": "宁德时代:关于2026年半年度募集资金存放与使用情况的专项报告",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          }
+        ]
+      },
+      {
+        "summary": "2026年4月30日配售6238.5万股H股，募资净额391.23亿港元用于全球新能源项目及研发投入。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "454e4615791a3f01652770a61c0c12cb",
+            "title": "宁德时代:2026年半年度报告摘要",
+            "publishTime": 1784908800000,
+            "publishTimeIso": "2026-07-24T16:00:00.000Z",
+            "publisher": "深圳证券交易所"
+          }
+        ]
+      },
+      {
+        "summary": "7月24日，宁德时代入股新能源新材料研发解决方案商深圳屹艮科技。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "489642e752df731506e1932ec9efc54e",
+            "title": "宁德时代入股屹艮科技 后者为新能源新材料研发解决方案商",
+            "publishTime": 1784881380000,
+            "publishTimeIso": "2026-07-24T08:23:00.000Z",
+            "publisher": "证券时报网"
+          }
+        ]
+      },
+      {
+        "summary": "7月25日，宁德时代与临汾公交签署战略合作框架协议，共建电池全生命周期管理体系。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "d54a047fc0659a45dd29707a2a6d0c89",
+            "title": "宁德时代与临汾公交签署战略合作框架协议",
+            "publishTime": 1784974980000,
+            "publishTimeIso": "2026-07-25T10:23:00.000Z",
+            "publisher": "证券时报网"
+          }
+        ]
+      },
+      {
+        "summary": "宁德时代称今明年储能市场将保持较快增长，上半年储能系统销量占比近七成。",
+        "tag": "正向",
+        "sentiment": "positive",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "68a3660eea68b7394603af4b38049140",
+            "title": "宁德时代：今明年储能市场仍将保持较快速的增长",
+            "publishTime": 1785073560000,
+            "publishTimeIso": "2026-07-26T13:46:00.000Z",
+            "publisher": "证券时报网"
+          }
+        ]
+      },
+      {
+        "summary": "国投证券报告以宁德时代为例分析新能源车产业投资四阶段，指其为2020年锂电池关键环节代表。",
+        "tag": "",
+        "sentiment": null,
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "1d7d3da6937c09c76d57ddf348817e22",
+            "title": "科技M顶之外：两条金律",
+            "publishTime": 1784876164000,
+            "publishTimeIso": "2026-07-24T06:56:04.000Z",
+            "publisher": "华尔街见闻"
+          }
+        ]
+      },
+      {
+        "summary": "截至7月17日，宁德时代港股未平仓空单比为18.04%，位居第二。",
+        "tag": "负向",
+        "sentiment": "negative",
+        "newsList": [
+          {
+            "newsType": "news",
+            "newsId": "7412ca34509d5da26dcc4d29ffd588ad",
+            "title": "智通港股空仓持单统计|7月24日",
+            "publishTime": 1784896207000,
+            "publishTimeIso": "2026-07-24T12:30:07.000Z",
+            "publisher": "智通财经"
+          }
+        ]
+      }
+    ]
+  },
+  "gzbk": null,
+  "tbtx": null,
+  "jrzysj": null
+}
