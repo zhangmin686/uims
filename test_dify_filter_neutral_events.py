@@ -36,7 +36,7 @@ def make_news_item(symbol, tag):
 
 
 def wrap(items, indent=2, **siblings):
-    """还原上游节点的输出：JSON 文本。"""
+    """还原上游节点 text 输出的形态：JSON 文本。"""
     payload = dict(siblings)
     payload["summaryList"] = items
     return json.dumps(payload, ensure_ascii=False, indent=indent)
@@ -67,8 +67,8 @@ class OutputContractTest(unittest.TestCase):
     def test_result_is_a_json_string(self):
         output = main(news=wrap([make_item("600519", "正向")]))
 
-        self.assertIsInstance(output["result"], str)
         self.assertEqual(set(output), {"result"})
+        self.assertIsInstance(output["result"], str)
 
     def test_result_keeps_structure_and_formatting(self):
         output = main(news=wrap([make_item("600519", "正向"), make_item("000001", "中性")]))
@@ -91,17 +91,6 @@ class OutputContractTest(unittest.TestCase):
         finally:
             node.JSON_INDENT = 2
 
-    def test_stats_only_emitted_when_enabled(self):
-        node.INCLUDE_STATS = True
-        try:
-            output = main(news=wrap([make_item("600519", "正向"), make_item("000001", "中性")]))
-            self.assertEqual(set(output), {"result", "keptCount", "removedCount", "error"})
-            self.assertEqual(output["keptCount"], 1)
-            self.assertEqual(output["removedCount"], 1)
-            self.assertEqual(output["error"], "")
-        finally:
-            node.INCLUDE_STATS = False
-
 
 class FilteringTest(unittest.TestCase):
     def test_removes_only_neutral_items(self):
@@ -117,6 +106,12 @@ class FilteringTest(unittest.TestCase):
         )
 
         self.assertEqual([item["symbol"] for item in parse_result(output)["summaryList"]], ["600519", "300750"])
+
+    def test_priority_and_other_fields_untouched(self):
+        item = make_item("600519", "正向", 7)
+        output = main(news=wrap([make_item("000001", "中性", 1), item]))
+
+        self.assertEqual(parse_result(output)["summaryList"], [item])
 
     def test_preserves_sibling_keys(self):
         output = main(news=wrap([make_item("000001", "中性")], requestId="abc-123", total=1))
@@ -139,28 +134,14 @@ class FilteringTest(unittest.TestCase):
         data = {"summaryList": [make_item("600519", "正向", 1), make_item("000001", "中性", 2)]}
         snapshot = json.dumps(data, ensure_ascii=False, sort_keys=True)
 
-        main(news=data, renumberPriority="true")
+        main(news=data)
 
         self.assertEqual(json.dumps(data, ensure_ascii=False, sort_keys=True), snapshot)
-
-    def test_priority_preserved_by_default(self):
-        output = main(news=wrap([make_item("000001", "中性", 1), make_item("600519", "正向", 2)]))
-
-        self.assertEqual([item["priority"] for item in parse_result(output)["summaryList"]], [2])
-
-    def test_priority_renumbered_on_request(self):
-        payload = wrap([make_item("000001", "中性", 1), make_item("600519", "正向", 2), make_item("300750", "负向", 3)])
-
-        for flag in ["true", "True", "1", 1, "是", True]:
-            with self.subTest(flag=flag):
-                output = main(news=payload, renumberPriority=flag)
-                self.assertEqual([item["priority"] for item in parse_result(output)["summaryList"]], [1, 2])
 
     def test_empty_and_all_neutral_lists(self):
         self.assertEqual(parse_result(main(news=wrap([])))["summaryList"], [])
 
         all_neutral = main(news=wrap([make_item("000001", "中性"), make_item("600519", "中性")]))
-        self.assertEqual(parse_result(all_neutral)["summaryList"], [])
         self.assertEqual(parse_result(all_neutral), {"summaryList": []})
 
 
@@ -175,9 +156,8 @@ class InputShapeTest(unittest.TestCase):
     def test_accepts_nested_wrapper_from_upstream_node(self):
         """真实日志形态：[[{"gzgg": "{...summaryList...}"}]]"""
         payload = [[{"gzgg": wrap([make_news_item("300283", "中性"), make_news_item("300750", "正向")])}]]
-        kept = parse_result(main(news=payload))["summaryList"]
 
-        self.assertEqual([item["symbol"] for item in kept], ["300750"])
+        self.assertEqual([item["symbol"] for item in parse_result(main(news=payload))["summaryList"]], ["300750"])
 
     def test_accepts_fenced_llm_output(self):
         output = main(news="```json\n%s\n```" % wrap([make_item("600519", "中性"), make_item("300750", "正向")]))
@@ -192,9 +172,8 @@ class InputShapeTest(unittest.TestCase):
     def test_does_not_misparse_json_like_item_fields(self):
         item = make_item("600519", "正向")
         item["summary"] = '{"看起来像": "JSON 的摘要文本"}'
-        kept = parse_result(main(news=wrap([item])))["summaryList"]
 
-        self.assertEqual(kept[0]["summary"], '{"看起来像": "JSON 的摘要文本"}')
+        self.assertEqual(parse_result(main(news=wrap([item])))["summaryList"][0]["summary"], item["summary"])
 
     def test_falls_back_to_unknown_variable_name(self):
         output = main(arg1=wrap([make_item("600519", "正向"), make_item("000001", "中性")]))
@@ -203,22 +182,11 @@ class InputShapeTest(unittest.TestCase):
 
 
 class ErrorHandlingTest(unittest.TestCase):
-    def test_raises_by_default_so_the_node_fails_loudly(self):
-        for bad in [None, "不是 JSON", {"list": []}, 123, ["不是对象"]]:
+    def test_raises_so_the_node_fails_loudly(self):
+        for bad in [None, "", "不是 JSON", {"list": []}, 123, ["不是对象"]]:
             with self.subTest(bad=bad):
                 with self.assertRaises(ValueError):
                     main(news=bad)
-
-    def test_degrades_to_empty_list_when_configured(self):
-        node.RAISE_ON_ERROR = False
-        node.INCLUDE_STATS = True
-        try:
-            output = main(news="不是 JSON")
-            self.assertEqual(parse_result(output), {"summaryList": []})
-            self.assertNotEqual(output["error"], "")
-        finally:
-            node.RAISE_ON_ERROR = True
-            node.INCLUDE_STATS = False
 
 
 class DifySandboxContractTest(unittest.TestCase):
@@ -246,13 +214,12 @@ class DifySandboxContractTest(unittest.TestCase):
             if isinstance(statement, ast.Expr):
                 self.assertIsInstance(statement.value, ast.Constant)  # 只允许文档字符串
 
-    def test_output_matches_declared_variable_count(self):
-        """Dify 校验 len(已声明输出) == len(返回字典)，多余的键会导致节点失败。"""
+    def test_output_matches_the_single_declared_string_variable(self):
+        """节点只声明了 result（String）；键数不一致或类型不符都会让节点失败。"""
         output = main(news=wrap([make_item("600519", "正向")]))
 
         self.assertEqual(set(output), {"result"})
-        for value in output.values():
-            self.assertIsInstance(value, str)
+        self.assertIsInstance(output["result"], str)
         json.dumps(output, indent=4)
 
     def test_runs_through_dify_runner_template(self):
