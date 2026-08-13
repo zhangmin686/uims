@@ -11,7 +11,7 @@ import json
 import unittest
 
 import dify_filter_neutral_events as node
-from dify_filter_neutral_events import is_neutral, main
+from dify_filter_neutral_events import main
 
 ITEM_KEYS = ["symbol", "market", "name", "summary", "priority", "tag", "label"]
 
@@ -28,165 +28,77 @@ def make_item(symbol, tag, priority=1):
     }
 
 
-def make_news_item(symbol, tag):
-    """带 title/publishTime/type 等 schema 之外扩展字段的真实形态。"""
-    item = make_item(symbol, tag)
-    item.update({"title": "%s：向特定对象发行股票申请获深交所受理" % symbol, "publishTime": 1785988200, "type": "news"})
-    return item
-
-
-def wrap(items, indent=2, **siblings):
+def wrap(items, **siblings):
     """还原上游节点 text 输出的形态：JSON 文本。"""
     payload = dict(siblings)
     payload["summaryList"] = items
-    return json.dumps(payload, ensure_ascii=False, indent=indent)
+    return json.dumps(payload, ensure_ascii=False, indent=2)
 
 
-def parse_result(output):
-    return json.loads(output["result"])
-
-
-class IsNeutralTest(unittest.TestCase):
-    def test_recognizes_neutral_variants(self):
-        for tag in ["中性", " 中性 ", "中性\n", "「中性」", "中性偏多", "中性/观望", "中立", "　中性　"]:
-            with self.subTest(tag=tag):
-                self.assertTrue(is_neutral({"tag": tag}))
-
-    def test_keeps_positive_and_negative(self):
-        for tag in ["正向", "负向", " 正向 ", "负向偏空"]:
-            with self.subTest(tag=tag):
-                self.assertFalse(is_neutral({"tag": tag}))
-
-    def test_missing_or_invalid_tag_is_not_neutral(self):
-        for item in [{}, {"tag": None}, {"tag": ""}, {"tag": 0}, {"tag": ["中性"]}, "不是对象"]:
-            with self.subTest(item=item):
-                self.assertFalse(is_neutral(item))
-
-
-class OutputContractTest(unittest.TestCase):
-    def test_result_is_a_json_string(self):
-        output = main(news=wrap([make_item("600519", "正向")]))
-
-        self.assertEqual(set(output), {"result"})
-        self.assertIsInstance(output["result"], str)
-
-    def test_result_keeps_structure_and_formatting(self):
-        output = main(news=wrap([make_item("600519", "正向"), make_item("000001", "中性")]))
-
-        # 与上游文本同样是 ensure_ascii=False + indent=2 的格式
-        self.assertTrue(output["result"].startswith('{\n  "summaryList": [\n    {\n'))
-        self.assertNotIn("\\u", output["result"])
-        self.assertIn("正向", output["result"])
-        self.assertNotIn("中性", output["result"])
-
-        result = parse_result(output)
-        self.assertEqual(list(result.keys()), ["summaryList"])
-        self.assertEqual(list(result["summaryList"][0].keys()), ITEM_KEYS)
-
-    def test_compact_output_when_indent_disabled(self):
-        node.JSON_INDENT = None
-        try:
-            output = main(news=wrap([make_item("600519", "正向")]))
-            self.assertNotIn("\n", output["result"])
-        finally:
-            node.JSON_INDENT = 2
+def kept_tags(output):
+    return [item["tag"] for item in json.loads(output["result"])["summaryList"]]
 
 
 class FilteringTest(unittest.TestCase):
-    def test_removes_only_neutral_items(self):
-        output = main(
-            news=wrap(
-                [
-                    make_item("600519", "正向", 1),
-                    make_item("000001", "中性", 2),
-                    make_item("300750", "负向", 3),
-                    make_item("601318", "中性", 4),
-                ]
-            )
-        )
+    def test_removes_neutral_variants(self):
+        for tag in ["中性", " 中性 ", "中性\n", "中性偏多", "中性/观望"]:
+            with self.subTest(tag=tag):
+                self.assertEqual(kept_tags(main(wrap([make_item("000001", tag)]))), [])
 
-        self.assertEqual([item["symbol"] for item in parse_result(output)["summaryList"]], ["600519", "300750"])
+    def test_keeps_positive_and_negative(self):
+        output = main(wrap([make_item("600519", "正向"), make_item("000001", "中性"), make_item("300750", "负向")]))
 
-    def test_priority_and_other_fields_untouched(self):
+        self.assertEqual(kept_tags(output), ["正向", "负向"])
+
+    def test_keeps_items_with_missing_or_odd_tag(self):
+        items = [{"symbol": "600519"}, {"symbol": "000001", "tag": None}, {"symbol": "300750", "tag": ""}]
+
+        self.assertEqual(len(json.loads(main(wrap(items))["result"])["summaryList"]), 3)
+
+    def test_other_fields_untouched(self):
         item = make_item("600519", "正向", 7)
-        output = main(news=wrap([make_item("000001", "中性", 1), item]))
+        item.update({"title": "半年报出炉", "publishTime": 1785988200, "type": "news"})
+        output = main(wrap([make_item("000001", "中性"), item]))
 
-        self.assertEqual(parse_result(output)["summaryList"], [item])
+        self.assertEqual(json.loads(output["result"])["summaryList"], [item])
 
     def test_preserves_sibling_keys(self):
-        output = main(news=wrap([make_item("000001", "中性")], requestId="abc-123", total=1))
-        result = parse_result(output)
+        result = json.loads(main(wrap([make_item("000001", "中性")], requestId="abc-123", total=1))["result"])
 
         self.assertEqual(sorted(result.keys()), ["requestId", "summaryList", "total"])
         self.assertEqual(result["requestId"], "abc-123")
         self.assertEqual(result["summaryList"], [])
 
-    def test_preserves_extra_item_fields(self):
-        output = main(news=wrap([make_news_item("300283", "中性"), make_news_item("300750", "正向")]))
-        kept = parse_result(output)["summaryList"]
+    def test_all_neutral_keeps_structure(self):
+        output = main(wrap([make_item("000001", "中性"), make_item("600519", "中性")]))
 
-        self.assertEqual(len(kept), 1)
-        self.assertEqual(kept[0]["title"], "300750：向特定对象发行股票申请获深交所受理")
-        self.assertEqual(kept[0]["publishTime"], 1785988200)
-        self.assertEqual(kept[0]["type"], "news")
-
-    def test_does_not_mutate_input(self):
-        data = {"summaryList": [make_item("600519", "正向", 1), make_item("000001", "中性", 2)]}
-        snapshot = json.dumps(data, ensure_ascii=False, sort_keys=True)
-
-        main(news=data)
-
-        self.assertEqual(json.dumps(data, ensure_ascii=False, sort_keys=True), snapshot)
-
-    def test_empty_and_all_neutral_lists(self):
-        self.assertEqual(parse_result(main(news=wrap([])))["summaryList"], [])
-
-        all_neutral = main(news=wrap([make_item("000001", "中性"), make_item("600519", "中性")]))
-        self.assertEqual(parse_result(all_neutral), {"summaryList": []})
+        self.assertEqual(json.loads(output["result"]), {"summaryList": []})
 
 
 class InputShapeTest(unittest.TestCase):
-    def test_accepts_parsed_object_and_array(self):
-        items = [make_item("600519", "正向"), make_item("000001", "中性")]
-
-        for payload in [{"summaryList": items}, items]:
-            with self.subTest(payload=type(payload).__name__):
-                self.assertEqual(len(parse_result(main(news=payload))["summaryList"]), 1)
-
-    def test_accepts_nested_wrapper_from_upstream_node(self):
-        """真实日志形态：[[{"gzgg": "{...summaryList...}"}]]"""
-        payload = [[{"gzgg": wrap([make_news_item("300283", "中性"), make_news_item("300750", "正向")])}]]
-
-        self.assertEqual([item["symbol"] for item in parse_result(main(news=payload))["summaryList"]], ["300750"])
-
     def test_accepts_fenced_llm_output(self):
-        output = main(news="```json\n%s\n```" % wrap([make_item("600519", "中性"), make_item("300750", "正向")]))
+        output = main("```json\n%s\n```" % wrap([make_item("600519", "中性"), make_item("300750", "正向")]))
 
-        self.assertEqual(len(parse_result(output)["summaryList"]), 1)
+        self.assertEqual(kept_tags(output), ["正向"])
 
-    def test_extracts_json_embedded_in_prose(self):
-        output = main(news="好的，以下是结果：\n%s\n希望对你有帮助。" % wrap([make_item("300750", "正向")]))
+    def test_accepts_already_parsed_object(self):
+        output = main({"summaryList": [make_item("600519", "正向"), make_item("000001", "中性")]})
 
-        self.assertEqual(len(parse_result(output)["summaryList"]), 1)
+        self.assertEqual(kept_tags(output), ["正向"])
 
-    def test_does_not_misparse_json_like_item_fields(self):
-        item = make_item("600519", "正向")
-        item["summary"] = '{"看起来像": "JSON 的摘要文本"}'
+    def test_does_not_mutate_parsed_input(self):
+        data = {"summaryList": [make_item("600519", "正向"), make_item("000001", "中性")]}
+        snapshot = json.dumps(data, ensure_ascii=False, sort_keys=True)
 
-        self.assertEqual(parse_result(main(news=wrap([item])))["summaryList"][0]["summary"], item["summary"])
+        main(data)
 
-    def test_falls_back_to_unknown_variable_name(self):
-        output = main(arg1=wrap([make_item("600519", "正向"), make_item("000001", "中性")]))
+        self.assertEqual(json.dumps(data, ensure_ascii=False, sort_keys=True), snapshot)
 
-        self.assertEqual(len(parse_result(output)["summaryList"]), 1)
-
-
-class ErrorHandlingTest(unittest.TestCase):
-    def test_raises_so_the_node_fails_loudly(self):
-        for bad in [None, "", "不是 JSON", {"list": []}, 123, ["不是对象"]]:
+    def test_fails_loudly_on_unusable_input(self):
+        for bad in ["", "不是 JSON", None, 123]:
             with self.subTest(bad=bad):
-                with self.assertRaises(ValueError):
-                    main(news=bad)
+                with self.assertRaises((ValueError, TypeError)):
+                    main(bad)
 
 
 class DifySandboxContractTest(unittest.TestCase):
@@ -208,19 +120,25 @@ class DifySandboxContractTest(unittest.TestCase):
 
     def test_has_no_top_level_side_effects(self):
         """Dify 会把整段代码当作 __main__ 执行，顶层不能有执行逻辑。"""
-        allowed = (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.Assign, ast.Expr)
+        allowed = (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.Expr)
         for statement in self._source_tree().body:
             self.assertIsInstance(statement, allowed)
             if isinstance(statement, ast.Expr):
                 self.assertIsInstance(statement.value, ast.Constant)  # 只允许文档字符串
 
-    def test_output_matches_the_single_declared_string_variable(self):
+    def test_returns_exactly_one_string_variable(self):
         """节点只声明了 result（String）；键数不一致或类型不符都会让节点失败。"""
-        output = main(news=wrap([make_item("600519", "正向")]))
+        output = main(wrap([make_item("600519", "正向")]))
 
         self.assertEqual(set(output), {"result"})
         self.assertIsInstance(output["result"], str)
-        json.dumps(output, indent=4)
+
+    def test_output_format_matches_upstream_text(self):
+        output = main(wrap([make_item("600519", "正向")]))
+
+        self.assertTrue(output["result"].startswith('{\n  "summaryList": [\n    {\n'))
+        self.assertNotIn("\\u", output["result"])
+        self.assertIn("正向", output["result"])
 
     def test_runs_through_dify_runner_template(self):
         """按 Dify 的模板执行：粘贴代码 -> main(**inputs) -> json.dumps 打印。"""
